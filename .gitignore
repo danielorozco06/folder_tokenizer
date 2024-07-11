@@ -1,3 +1,4 @@
 .aider*
 __pycache__
 .mypy_cache/
+!.aiderignore
