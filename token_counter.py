@@ -83,6 +83,7 @@ def count_tokens_in_file(file_path):
 
 def count_tokens_in_directory(directory_path):
     file_tokens = []
+    total_files_analyzed = 0
     for root, dirs, files in os.walk(directory_path):
         dirs[:] = [d for d in dirs if not should_exclude(os.path.join(root, d))]
         for file in files:
@@ -90,8 +91,9 @@ def count_tokens_in_directory(directory_path):
             if not should_exclude(file_path):
                 tokens = count_tokens_in_file(file_path)
                 file_tokens.append((file_path, tokens))
+                total_files_analyzed += 1
 
     file_tokens.sort(key=lambda x: x[1], reverse=True)
     total_tokens = sum(tokens for _, tokens in file_tokens)
 
-    return file_tokens, total_tokens
+    return file_tokens, total_tokens, total_files_analyzed
