@@ -1,31 +1,65 @@
 import os
 from gpt3_tokenizer import encode
 
+
 def should_exclude(path):
-    exclude_dirs = {'node_modules', 'output', 'dist', '__pycache__', '.git', '.aider.tags.cache.v3', 
-                    '.vscode', 'coverage', '__test__'}
-    exclude_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff',
-                          '.zip', '.tar', '.gz', '.rar', '.7z',
-                          '.exe', '.dll', '.so', '.dylib',
-                          '.pyc', '.pyo', '.pyd',
-                          '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'}
-    
+    exclude_dirs = {
+        "node_modules",
+        "output",
+        "dist",
+        "__pycache__",
+        ".git",
+        ".aider.tags.cache.v3",
+        ".vscode",
+        "coverage",
+        "__test__",
+    }
+    exclude_extensions = {
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".bmp",
+        ".tiff",
+        ".zip",
+        ".tar",
+        ".gz",
+        ".rar",
+        ".7z",
+        ".exe",
+        ".dll",
+        ".so",
+        ".dylib",
+        ".pyc",
+        ".pyo",
+        ".pyd",
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".ppt",
+        ".pptx",
+    }
+
     parts = path.split(os.sep)
     if any(part in exclude_dirs for part in parts):
         return True
-    
+
     _, ext = os.path.splitext(path.lower())
     return ext in exclude_extensions
 
+
 def count_tokens_in_file(file_path):
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
         tokens = encode(content)
         return len(tokens)
     except Exception as e:
         print(f"Error processing file: {file_path}. Error: {str(e)}")
         return 0
+
 
 def count_tokens_in_directory(directory_path):
     file_tokens = []
@@ -36,8 +70,8 @@ def count_tokens_in_directory(directory_path):
             if not should_exclude(file_path):
                 tokens = count_tokens_in_file(file_path)
                 file_tokens.append((file_path, tokens))
-    
+
     file_tokens.sort(key=lambda x: x[1], reverse=True)
     total_tokens = sum(tokens for _, tokens in file_tokens)
-    
+
     return file_tokens, total_tokens
