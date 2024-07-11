@@ -1,4 +1,5 @@
 import os
+
 from gpt3_tokenizer import encode
 
 
@@ -13,6 +14,7 @@ def should_exclude(path):
         ".vscode",
         "coverage",
         "__test__",
+        "pipelines",
     }
     exclude_extensions = {
         ".jpg",
@@ -40,10 +42,28 @@ def should_exclude(path):
         ".xlsx",
         ".ppt",
         ".pptx",
+        ".md",
+    }
+    exclude_files = {
+        "package-lock.json",
+        "yarn.lock",
+        ".gitignore",
+        ".dockerignore",
+        ".env",
+        ".DS_Store",
+        ".editorconfig",
+        "azure-pipelines.yml",
+        "LICENSE",
+        "jest.config.js",
+        "tsconfig.json",
     }
 
     parts = path.split(os.sep)
     if any(part in exclude_dirs for part in parts):
+        return True
+
+    filename = os.path.basename(path)
+    if filename in exclude_files:
         return True
 
     _, ext = os.path.splitext(path.lower())
